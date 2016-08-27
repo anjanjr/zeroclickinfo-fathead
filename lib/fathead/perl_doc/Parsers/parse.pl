@@ -803,8 +803,12 @@ sub parse_variables {
 
 sub aliases_package {
     my ($package) = @_;
-    make_aliases($package,
-        $package =~ s/::/ /gr,
+    my $spaced = $package =~ s/::/ /gr;
+    make_aliases("$package (module)",
+        "$spaced", "$package",
+        map { ("$package $_", "$spaced $_") } (
+            'module', 'library', 'package',
+        ),
     );
 }
 
@@ -841,7 +845,7 @@ sub parse_package {
         ->map('text')->each;
     my $article = {
         text  => "$short_desc$synopsis",
-        title => $package_name,
+        title => "$package_name (module)",
         related => \@related,
     };
     return {
